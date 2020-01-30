@@ -9,11 +9,12 @@ int main(int argc, char* argv[]) {
   }
 
   std::string iFile = argv[1];
+  std::cout << " File name " << iFile << std::endl;
   unsigned int nmodules = std::stoi(argv[2]);
   std::string oFile = argv[3];
 
 
-  BTAnalyzer *analyzer = new  BTAnalyzer(iFile, nmodules, oFile);
+  BTAnalyzer *analyzer = new  BTAnalyzer(iFile.c_str(), nmodules, oFile);
   std::cout << "Executing event loop!" << std::endl;
   analyzer->Loop();
   std::cout << "Saving Histos!" << std::endl;

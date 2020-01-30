@@ -57,6 +57,12 @@ private :
    TTreeReaderValue< std::vector< unsigned short > >* cbcplladd_;
    TTreeReaderValue< std::vector< unsigned short > >* cbcl1_;
 
+   TTreeReaderValue< std::vector< unsigned short > >* stubpos_;   
+   TTreeReaderValue< std::vector< unsigned short > >* stubbend_;
+
+   TTreeReaderValue< unsigned short >* nstub_[4];   
+   TTreeReaderValue< unsigned short >* tdcphase_[4];
+
    bool raneventloop_;
 };
 

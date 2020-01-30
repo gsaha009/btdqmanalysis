@@ -45,11 +45,14 @@ bool BTAnalyzer::Init() {
     //odd channels
     hitkey = "hitOdd_Mod_" + std::to_string(i);
     hitsodd_[i] = new TTreeReaderValue< std::vector< unsigned short > >(*treeReader_, hitkey.c_str());
+    // tdc
+    std::string tdckey = "TDCPhase_Mod_"+std::to_string(i);
+    tdcphase_[i] = new TTreeReaderValue< unsigned short >(*treeReader_, tdckey.c_str());
 
     //Similarly read the cbc erros etc.
 
     //create the container of histograms for this module
-    mhists_[i] = new ModuleHistos(TString("Module" + std::to_string(i)));
+    mhists_[i] = new ModuleHistos(TString("Module_" + std::to_string(i)));
   }
 
   return true;   
@@ -73,17 +76,23 @@ void BTAnalyzer::Loop()
   while (treeReader_->Next()) {
     //clear all the containers
     Reset();
-
+ 
+    
     //loop over modules
     for(unsigned int i = 0; i < nmods_; i++ ) {
       ModuleHistos& mh = *(mhists_[i]);
       //Loop over even channels
+      mh.nhitseven->Fill((*(hitseven_[i]->Get())).size());
+      mh.nhitsodd->Fill((*(hitsodd_[i]->Get())).size());
+      mh.nhitstdcevenprof->Fill((*(tdcphase_[i]->Get())), (*(hitseven_[i]->Get())).size());
+      mh.nhitstdcoddprof->Fill((*(tdcphase_[i]->Get())), (*(hitsodd_[i]->Get())).size());
+
       for (float h: *(hitseven_[i]->Get())) {
-        mh.hposeven->Fill(h);
+        mh.hitposeven->Fill(h);
       }
       //Loop over odd channels
       for (float h: *(hitsodd_[i]->Get())) {
-        mh.hposodd->Fill(h);
+        mh.hitposodd->Fill(h);
       }
 
       //do clustering
@@ -92,13 +101,22 @@ void BTAnalyzer::Loop()
       offlineclusterizer(*(hitsodd_[i]->Get()), 16, 127, clusterodd_[i]);
 
       //make plots for clusters
+
+      mh.nclseven->Fill(clustereven_[i].size());
+      mh.nclsodd->Fill(clusterodd_[i].size());
+      mh.nclstdcevenprof->Fill((*(tdcphase_[i]->Get())), clustereven_[i].size());
+      mh.nclstdcoddprof->Fill ((*(tdcphase_[i]->Get())), clusterodd_[i].size());
+      mh.nclstot->Fill(clustereven_[i].size()+clusterodd_[i].size());      
+      
       for(auto& c : clustereven_[i]) {
         mh.clsposeven->Fill(c.center());
         mh.clswidtheven->Fill(c.size());
+        mh.clwidthtdcevenprof->Fill((*(tdcphase_[i]->Get())),c.size());
       }
       for(auto& c : clusterodd_[i]) {
         mh.clsposodd->Fill(c.center());
         mh.clswidthodd->Fill(c.size());
+        mh.clwidthtdcoddprof->Fill((*(tdcphase_[i]->Get())),c.size());
       }
 
       //for stubs
@@ -171,14 +189,25 @@ void BTAnalyzer::SaveHistos() {
     fout->mkdir(modkey);
     fout->cd(modkey);
     ModuleHistos& mh = *(mhists_[i]);
-    mh.hposeven->Write();
-    mh.hposodd->Write();
+    mh.nhitseven->Write();
+    mh.nhitsodd->Write();
+    mh.hitposeven->Write();
+    mh.hitposodd->Write();
+    mh.nclseven->Write();
+    mh.nclsodd->Write();
+    mh.nclstot->Write();    
     mh.clsposeven->Write();
     mh.clsposodd->Write();
     mh.clswidtheven->Write();
     mh.clswidthodd->Write();
     mh.nstubs->Write(); 
     mh.stubpos->Write();
+    mh.nclstdcevenprof->Write();
+    mh.nclstdcoddprof->Write();
+    mh.nhitstdcevenprof->Write();
+    mh.nhitstdcoddprof->Write();
+    mh.clwidthtdcevenprof->Write();
+    mh.clwidthtdcoddprof->Write();
     fout->cd();  
   }
   fout->Save();
