@@ -20,7 +20,7 @@ class stub : public TObject {
       return os;
     }
   private:
-    uint32_t center__;
+    float center__;
     uint8_t column__;
     float bend_;
 };

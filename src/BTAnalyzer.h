@@ -16,23 +16,28 @@
 #include<map>
 #include "Cluster.h"
 #include "Stub.h"
+#include "Track.h"
 #include "ModuleHistos.h"
 //Even == Top
 //Odd == Bottom
-
+enum SENSORID{
+  TOP=30, BOTTOM=31
+};
 class BTAnalyzer {
 public :
+
 
    BTAnalyzer(TString inFile, unsigned int nMods, TString outFile);
    virtual ~BTAnalyzer();
    bool Init();
    void Loop();
-   void offlineclusterizer(const std::vector<unsigned short>& hits, const unsigned int nCbc, const unsigned int nStripsPerCBC, std::vector<cluster>& clusVec );
+   void offlineclusterizer(const std::vector<int>& hits, const unsigned int nCbc, const unsigned int nStripsPerCBC, std::vector<cluster>& clusVec );
    void stubSimulator(const std::vector<cluster>& seeding, const std::vector<cluster>& matching, 
-                      std::vector<stub>& stubVec, const unsigned int clswCut = 3, const float window = 5.);
+                      std::vector<stub>& stubVec, const unsigned int clswCut = 4, const float window = 5.);
 
    void SaveHistos();
    void Reset();
+
    
 private :
    void bookHistogram();
@@ -43,25 +48,38 @@ private :
    
    TString inFile_;
    TString outFile_;
-   TTreeReader* treeReader_;   //!pointer to the analyzed TTree or TChain
+   TTreeReader* treeReader_;     //!pointer to the analyzed DUT TTree or TChain
+   TTreeReader* tktreeReader_;   //!pointer to the analyzed DUT TTree or TChain
+   TTreeReader* fptreeReader_;   //!pointer to the analyzed DUT TTree or TChain
+   TTreeReader* cbcstubtreeReader_;   //!pointer to the analyzed DUT TTree or TChain
+
    unsigned int nmods_;
-   TTreeReaderValue< std::vector< unsigned short > >* hitseven_[4];
-   TTreeReaderValue< std::vector< unsigned short > >* hitsodd_[4];
-   std::vector<cluster>  clustereven_[4];
-   std::vector<cluster>  clusterodd_[4];
-   std::vector<stub>     nstubs_[4];
+   TTreeReaderValue< std::vector< int > >* row_;//which side of the module?
+   TTreeReaderValue< std::vector< int > >* col_;//which channel
+   TTreeReaderValue< std::vector< int > >* iden_;//identifies top and bottom sensor#top=30#bottom=31
    
+   //reference plane
+   TTreeReaderValue< std::vector< double > >  *xPos_fp;
+   TTreeReaderValue< std::vector< double > >  *yPos_fp;
+   TTreeReaderValue< std::vector< int > >     *sensorId_fp;
+
+
    ModuleHistos*  mhists_[4];
-   //
-   TTreeReaderValue< std::vector< unsigned short > >* cbcerrors_;
-   TTreeReaderValue< std::vector< unsigned short > >* cbcplladd_;
-   TTreeReaderValue< std::vector< unsigned short > >* cbcl1_;
+   TrackHistos*   tkhists_;
 
-   TTreeReaderValue< std::vector< unsigned short > >* stubpos_;   
-   TTreeReaderValue< std::vector< unsigned short > >* stubbend_;
+   TTreeReaderValue< std::vector< double > >* xPos_;
+   TTreeReaderValue< std::vector< double > >* yPos_;
+   TTreeReaderValue< std::vector< double > >* dxdz_;
+   TTreeReaderValue< std::vector< double > >* dydz_;
+   TTreeReaderValue< std::vector< double > >* chi2_;
+   TTreeReaderValue< std::vector< double > >* ndof_;
+   TTreeReaderValue< std::vector< int > >* tkiden_;
+   TTreeReaderValue< std::vector< int > >* trackNum_;
 
-   TTreeReaderValue< unsigned short >* nstub_[4];   
-   TTreeReaderValue< unsigned short >* tdcphase_[4];
+   TTreeReaderValue< std::vector< int > > *cbcstubPos_;
+   TTreeReaderValue< std::vector< int > > *Fe_;
+   TTreeReaderValue< std::vector< int > > *Cbc_;
+   TTreeReaderValue< std::vector< int > > *stubBend_;
 
    bool raneventloop_;
 };
