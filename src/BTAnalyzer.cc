@@ -57,13 +57,13 @@ bool BTAnalyzer::Init() {
     std::cout << "Track tree not found in file\n";
     std::exit(EXIT_FAILURE);
   }
-  xPos_ = new TTreeReaderValue< std::vector< double > >(*tktreeReader_, "xPos");
-  yPos_ = new TTreeReaderValue< std::vector< double > >(*tktreeReader_, "yPos");
-  dxdz_ = new TTreeReaderValue< std::vector< double > >(*tktreeReader_, "dxdz");
-  dydz_ = new TTreeReaderValue< std::vector< double > >(*tktreeReader_, "dydz");
-  chi2_ = new TTreeReaderValue< std::vector< double > >(*tktreeReader_, "chi2");
-  ndof_ = new TTreeReaderValue< std::vector< double > >(*tktreeReader_, "ndof");
-  tkiden_ = new TTreeReaderValue< std::vector< int > >(*tktreeReader_, "iden");
+  xPos_     = new TTreeReaderValue< std::vector< double > >(*tktreeReader_, "xPos");
+  yPos_     = new TTreeReaderValue< std::vector< double > >(*tktreeReader_, "yPos");
+  dxdz_     = new TTreeReaderValue< std::vector< double > >(*tktreeReader_, "dxdz");
+  dydz_     = new TTreeReaderValue< std::vector< double > >(*tktreeReader_, "dydz");
+  chi2_     = new TTreeReaderValue< std::vector< double > >(*tktreeReader_, "chi2");
+  ndof_     = new TTreeReaderValue< std::vector< double > >(*tktreeReader_, "ndof");
+  tkiden_   = new TTreeReaderValue< std::vector< int > >(*tktreeReader_, "iden");
   trackNum_ = new TTreeReaderValue< std::vector< int > >(*tktreeReader_, "trackNum");
 
   //read tracking info
@@ -154,7 +154,7 @@ void BTAnalyzer::Loop()
         }//end loop FeI4
       }//end loop over tracks
     tkhists_->ncleanedTk->Fill(cleanedTk.size());
-    ncleanTk+=cleanedTk.size();
+    //ncleanTk+=cleanedTk.size();
 
     
 
