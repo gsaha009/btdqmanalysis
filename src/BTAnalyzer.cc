@@ -42,8 +42,8 @@ bool BTAnalyzer::Init() {
   //loop over modules
   for(unsigned int i = 0; i < nmods_; i++ ) {
     std::cout << "Reading branch for module:" << i << std::endl;
-    row_    = new TTreeReaderValue< std::vector< int > >(*treeReader_, "row");
-    col_ = new TTreeReaderValue< std::vector< int > >(*treeReader_, "col");
+    row_  = new TTreeReaderValue< std::vector< int > >(*treeReader_, "row");
+    col_  = new TTreeReaderValue< std::vector< int > >(*treeReader_, "col");
     iden_ = new TTreeReaderValue< std::vector< int > >(*treeReader_, "iden");
     //create the container of histograms for this module
     mhists_[i] = new ModuleHistos(TString("Module_" + std::to_string(i)));
@@ -75,7 +75,7 @@ bool BTAnalyzer::Init() {
   xPos_fp = new TTreeReaderValue< std::vector< double > >(*fptreeReader_, "xPos");
   yPos_fp = new TTreeReaderValue< std::vector< double > >(*fptreeReader_, "yPos");
   sensorId_fp = new TTreeReaderValue< std::vector< int > >(*fptreeReader_, "sensorId");
-
+  clustersize_fp = new TTreeReaderValue< std::vector< int > >(*fptreeReader_, "clustersize");
   //read cbc stubinfo
   cbcstubtreeReader_ = new TTreeReader("stubs",fin);
   //ncbcStubs_ = new TTreeReaderValue<Int_t>(*cbcstubtreeReader_, "nStubs");
@@ -318,6 +318,7 @@ void BTAnalyzer::Loop()
       // if (ref_tracks>-1)
       bool tdcok = tdc == 2 or tdc == 3 or tdc == 4;
       if(!tdcok)   continue;
+
       for (unsigned int irt =0; irt < ref_tracks.size(); irt++) {
 	int ref_track = ref_tracks[irt];
 	int trackID = -1;
@@ -338,9 +339,10 @@ void BTAnalyzer::Loop()
         //now loop over sensor hits with sensor ID = 30, i.e. DUT
         for (unsigned int iref = 0; iref < (sensorId_fp->Get())->size() ; iref++)  {
           int refId = (sensorId_fp->Get())->at(iref);
-          if(refId != 30)    continue;//sensorId 10 is FeI4
+          if(refId != 30)    continue;//sensorId 30 is DUT
           double xdut = (xPos_fp->Get())->at(iref);
           double ydut = (yPos_fp->Get())->at(iref);
+          int clsize = (clustersize_fp->Get())->at(iref);
           
           //residual DUT
           double xres = xdut - txpos;

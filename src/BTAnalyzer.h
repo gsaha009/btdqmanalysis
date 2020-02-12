@@ -62,6 +62,7 @@ private :
    TTreeReaderValue< std::vector< double > >  *xPos_fp;
    TTreeReaderValue< std::vector< double > >  *yPos_fp;
    TTreeReaderValue< std::vector< int > >     *sensorId_fp;
+   TTreeReaderValue< std::vector< int > >    *clustersize_fp;
 
 
    ModuleHistos*  mhists_[4];
