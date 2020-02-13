@@ -102,6 +102,7 @@ void BTAnalyzer::Loop()
   unsigned int reftracksPerEvent = 0;
   unsigned int nRefTracks = 0;
   unsigned int nMatchedTracks = 0;
+  
   while (treeReader_->Next() && tktreeReader_->Next() && fptreeReader_->Next() && cbcstubtreeReader_->Next()) {
     //clear all the containers
     Reset();
@@ -200,7 +201,6 @@ void BTAnalyzer::Loop()
       }//finish loop over hits
       
       //Plot hit prop
-      mh.htdc->Fill(tdc);
       mh.bottomS.nhits_Fe0->Fill(hitsBotfe0.size());
       mh.bottomS.nhits_Fe1->Fill(hitsBotfe1.size());
       mh.topS.nhits_Fe0->Fill(hitsTopfe0.size());
@@ -336,6 +336,11 @@ void BTAnalyzer::Loop()
         mh.tkatDUTmap->Fill(txpos, typos);
         mh.tkxatDUT->Fill(txpos);
         mh.tkyatDUT->Fill(typos);
+        //Fill denominator tdc histo
+        mh.htdc->Fill(tdc);
+        bool isMatched = false;
+        
+        bool tkMcount[10] = {0};
         //now loop over sensor hits with sensor ID = 30, i.e. DUT
         for (unsigned int iref = 0; iref < (sensorId_fp->Get())->size() ; iref++)  {
           int refId = (sensorId_fp->Get())->at(iref);
@@ -352,17 +357,31 @@ void BTAnalyzer::Loop()
           mh.tkVsDUTycorr->Fill(typos, ydut);
           mh.resXdut->Fill(xres);
           mh.resYdut->Fill(yres);
+          for(unsigned int ires = 0; ires < 10; ires++) {
+            float cut = (ires+1) * 0.05;
+            if ( std::fabs(xres)< cut) 
+              tkMcount[ires] = true;
+            
+          }
           //This cut has to be varied to plot efficiency as a function of cut
           if ( std::fabs(xres)<0.200 /*&& fabs(dy)<2.5*/) {
 	    nMatchedTracks++;
-            mh.htdc_matched->Fill(tdc);
-            mh.tkxatDUT_matched->Fill(txpos);
-            mh.tkyatDUT_matched->Fill(typos);           
+            isMatched = true;           
           }
         }//end loop over sensor hits
-        
+        if(isMatched)     {
+          mh.htdc_matched->Fill(tdc);
+          mh.tkxatDUT_matched->Fill(txpos);
+          mh.tkyatDUT_matched->Fill(typos);
+        }
+        for(unsigned int ires = 0; ires < 10; ires++) 
+          if(tkMcount[ires]) mh.tkmatchCounter->Fill((ires+1)*50);
+         
       }
-      
+      //float s = 1./float(nRefTracks);
+      //mh.tkmatchCounter->Scale(s);
+      //for(unsigned int ires = 1; ires <= 10; ires++)
+      //  mh.tkmatchCounter->SetBinContent(ires, mh.tkmatchCounter->GetBinContent(ires)/float(nRefTracks));  
 
 
     }//for loop over modules

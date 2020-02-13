@@ -125,6 +125,7 @@ public:
   TH1F* tkxatDUT_matched;
   TH1F* tkyatDUT;
   TH1F* tkyatDUT_matched;
+  TH1F* tkmatchCounter;
 
 
   SensorHistos bottomS;

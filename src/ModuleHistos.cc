@@ -112,10 +112,11 @@ void ModuleHistos::bookHistos() {
   resXdut = new TH1F("resXDUT", "Track x-residual at DUT", 3000, -15, 15);
   resYdut = new TH1F("resYDUT", "Track y-residual at DUT", 3000, -15, 15);
 
-  tkxatDUT = new TH1F("tkxatDUT", "Track x at DUT", 3000, -15, 15);
-  tkxatDUT_matched = new TH1F("tkxatDUT_matched", "Matched Track x at DUT", 3000, -15, 15);
+  tkxatDUT = new TH1F("tkxatDUT", "Track x at DUT", 200, -10, 10);
+  tkxatDUT_matched = new TH1F("tkxatDUT_matched", "Matched Track x at DUT", 200, -10, 10);
   tkyatDUT = new TH1F("tkyatDUT", "Track y at DUT", 3000, -15, 15);
   tkyatDUT_matched = new TH1F("tkyatDUT_matched", "Matched Track y at DUT", 3000, -15, 15);
+  tkmatchCounter = new TH1F("tkmatchCounter_"   + moduleId, "; xtk - xDUT(#mu m); Efficiency" , 10, 25, 525);
 }
 ModuleHistos::~ModuleHistos() {
   std::cout << "Destroying module histo" << std::endl;
@@ -159,6 +160,7 @@ void ModuleHistos::writeHistostofile(TFile* fout) {
   tkxatDUT_matched->Write();
   tkyatDUT->Write();
   tkyatDUT_matched->Write();
+  tkmatchCounter->Write();
 
   bottomS.writeHistostofile(fout, moduleId);
   topS.writeHistostofile(fout, moduleId);
