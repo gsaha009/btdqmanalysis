@@ -18,23 +18,25 @@
 #include "Stub.h"
 #include "Track.h"
 #include "ModuleHistos.h"
+
 //Even == Top
 //Odd == Bottom
 enum SENSORID{
-  TOP=30, BOTTOM=31
+  Mod1TOP    =30, 
+  Mod1BOTTOM =31, 
+  Mod2TOP    =32, 
+  Mod2BOTTOM =33
 };
+
 class BTAnalyzer {
 public :
-
-
-   BTAnalyzer(TString inFile, unsigned int nMods, TString outFile);
+  BTAnalyzer(TString inFile, unsigned int nMods, TString sensorType, TString outFile);
    virtual ~BTAnalyzer();
    bool Init();
    void Loop();
-   void offlineclusterizer(const std::vector<int>& hits, const unsigned int nCbc, const unsigned int nStripsPerCBC, std::vector<cluster>& clusVec );
+   void offlineclusterizer(std::vector<int>& hits, const unsigned int nCbc, const unsigned int nStripsPerCBC, std::vector<cluster>& clusVec );
    void stubSimulator(const std::vector<cluster>& seeding, const std::vector<cluster>& matching, 
                       std::vector<stub>& stubVec, const unsigned int clswCut = 4, const float window = 5.);
-
    void SaveHistos();
    void Reset();
 
@@ -54,6 +56,8 @@ private :
    TTreeReader* cbcstubtreeReader_;   //!pointer to the analyzed DUT TTree or TChain
 
    unsigned int nmods_;
+   TString sensorType_;
+
    TTreeReaderValue< std::vector< int > >* row_;//which side of the module?
    TTreeReaderValue< std::vector< int > >* col_;//which channel
    TTreeReaderValue< std::vector< int > >* iden_;//identifies top and bottom sensor#top=30#bottom=31

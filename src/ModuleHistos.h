@@ -68,9 +68,23 @@ class SensorHistos {
 
     TH1F* clspos_Fe0;
     TH1F* clspos_Fe1;
+    TH1F* clspos_FeAll;
+    TH1F* clspos;
  
     TH1I* clswidth_Fe0;
     TH1I* clswidth_Fe1;   
+
+    TH1F* clswidth_alltdc;
+    TH1F* clswidth_tdc2;
+    TH1F* clswidth_tdc3;
+    TH1F* clswidth_tdc4;
+
+    TH1F* ncls_alltdc;
+    TH1F* ncls_tdc2;
+    TH1F* ncls_tdc3;
+    TH1F* ncls_tdc4;
+
+    //    TH2F* clswidth_tdc;
 };
 
 class ModuleHistos {
@@ -104,6 +118,7 @@ public:
 
   TH2F* clusterPoscorrfe0;
   TH2F* clusterPoscorrfe1;
+  TH2F* clusterPoscorr;
   
   TH2F* clsvsStubPoscorrfe0;
   TH2F* clsvsStubPoscorrfe1;
@@ -126,6 +141,40 @@ public:
   TH1F* tkyatDUT;
   TH1F* tkyatDUT_matched;
   TH1F* tkmatchCounter;
+  TH1F* cbcStubTrackPosDiff;
+  TH1F* recoStubTrackPosDiff;
+  TH1F* tkcbcStubRes;
+  TH1F* tkrecoStubRes;
+  TH1F* nMatchedTk;
+  TH1F* nMatchedcbcSt;
+  TH1F* nMatchedrecoSt;
+  TH1F* cbcStubPos;
+  TH1F* recoStubPos;
+  TH1F* matchedCbcStubPos;
+  TH1F* matchedRecoStubPos;
+  TH1F* cbcMatchedTkYPos;
+  TH1F* recoMatchedTkYPos;
+  /*
+  TH1F* nMatchedcbcStubs_all;
+  TH1F* nMatchedcbcStubs_tdc2;
+  TH1F* nMatchedcbcStubs_tdc3;
+  TH1F* nMatchedcbcStubs_tdc4;
+  TH1F* nMatchedrecoStubs_all;
+  TH1F* nMatchedrecoStubs_tdc2;
+  TH1F* nMatchedrecoStubs_tdc3;
+  TH1F* nMatchedrecoStubs_tdc4;
+  TH1F* cbcStubEff_all;
+  TH1F* cbcStubEff_tdc2;
+  TH1F* cbcStubEff_tdc3;
+  TH1F* cbcStubEff_tdc4;
+  TH1F* recoStubEff_all;
+  TH1F* recoStubEff_tdc2;
+  TH1F* recoStubEff_tdc3;
+  TH1F* recoStubEff_tdc4;
+  */
+  TH2F* stubPosCorrl;
+  TProfile* cumlEffCbc;
+  TProfile* cumlEffReco;
 
 
   SensorHistos bottomS;
@@ -133,4 +182,3 @@ public:
 
 };
 #endif
-
