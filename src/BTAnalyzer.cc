@@ -71,17 +71,17 @@ bool BTAnalyzer::Init() {
     std::cout << "Track tree not found in file\n";
     std::exit(EXIT_FAILURE);
   }
-  xPos_fp = new TTreeReaderValue< std::vector< double > >(*fptreeReader_, "xPos");
-  yPos_fp = new TTreeReaderValue< std::vector< double > >(*fptreeReader_, "yPos");
-  sensorId_fp = new TTreeReaderValue< std::vector< int > >(*fptreeReader_, "sensorId");
-  clustersize_fp = new TTreeReaderValue< std::vector< int > >(*fptreeReader_, "clustersize");
+  xPos_fp             = new TTreeReaderValue< std::vector< double > >(*fptreeReader_, "xPos");
+  yPos_fp             = new TTreeReaderValue< std::vector< double > >(*fptreeReader_, "yPos");
+  sensorId_fp         = new TTreeReaderValue< std::vector< int > >(*fptreeReader_, "sensorId");
+  clustersize_fp      = new TTreeReaderValue< std::vector< int > >(*fptreeReader_, "clustersize");
   //read cbc stubinfo
-  cbcstubtreeReader_ = new TTreeReader("stubs",fin);
+  cbcstubtreeReader_  = new TTreeReader("stubs",fin);
   //ncbcStubs_ = new TTreeReaderValue<Int_t>(*cbcstubtreeReader_, "nStubs");
-  cbcstubPos_    = new TTreeReaderValue< std::vector< int > >(*cbcstubtreeReader_, "stubPos");
-  Fe_    = new TTreeReaderValue< std::vector< int > >(*cbcstubtreeReader_, "Fe");
-  Cbc_    = new TTreeReaderValue< std::vector< int > >(*cbcstubtreeReader_, "Cbc");
-  stubBend_ = new TTreeReaderValue< std::vector< int > >(*cbcstubtreeReader_, "stubBend");
+  cbcstubPos_         = new TTreeReaderValue< std::vector< int > >(*cbcstubtreeReader_, "stubPos");
+  Fe_                 = new TTreeReaderValue< std::vector< int > >(*cbcstubtreeReader_, "Fe");
+  Cbc_                = new TTreeReaderValue< std::vector< int > >(*cbcstubtreeReader_, "Cbc");
+  stubBend_           = new TTreeReaderValue< std::vector< int > >(*cbcstubtreeReader_, "stubBend");
   std::cout<<"Initialized...\n";
   return true;
 }
@@ -320,11 +320,15 @@ void BTAnalyzer::Loop()
       //plot cbc stub prop
       mh.ncbcstubsfe0->Fill(cbcstubfe0.size());
       std::vector<float>cbcStubPos;
+      std::vector<float>cbcStubBend;
       for(auto& s : cbcstubfe0) {
 	float stubPos = (s.center()-508.5)*0.09;
 	cbcStubPos.push_back(stubPos);
+	cbcStubBend.push_back(s.bend());
 	mh.cbcStubPos -> Fill (stubPos);
         mh.cbcStubposfe0->Fill(s.center());
+	//std::cout<<"fe0 : "<<s.bend()<<"\n";
+	mh.cbcStubbendfe0->Fill(s.bend());
         for (auto& h: clsBotfe0) {
           mh.clsvsStubPoscorrfe0->Fill(h.center(), s.center());
         }
@@ -333,8 +337,11 @@ void BTAnalyzer::Loop()
       for(auto& s : cbcstubfe1) {
 	float stubPos = (s.center()-508.5)*0.09;
 	cbcStubPos.push_back(stubPos);
+	cbcStubBend.push_back(s.bend());
 	mh.cbcStubPos -> Fill (stubPos);
         mh.cbcStubposfe1->Fill(s.center());
+	//std::cout<<"fe1 : "<<s.bend()<<"\n";
+	mh.cbcStubbendfe1->Fill(s.bend());
         for (auto& h: clsBotfe1) {
           mh.clsvsStubPoscorrfe1->Fill(h.center(), s.center());
         }
@@ -432,7 +439,7 @@ void BTAnalyzer::Loop()
           double ydut = (yPos_fp->Get())->at(iref);
 	  // ??????????????????????????????????
           unsigned int clsize  = (clustersize_fp->Get())->at(iref);
-	  std::cout<<clsize<<"\n";
+	  //std::cout<<clsize<<"\n";
           //residual DUT
           double xres = xdut - txpos;
           double yres = ydut - typos;
@@ -492,22 +499,27 @@ void BTAnalyzer::Loop()
 	  // matched cbc Stubs
 	  double min = 999.9;
 	  double cbcStPos = 0.0;
+	  float cbcStBend = 19.0;
 	  bool hasMatCbc = false;
 	  bool hasMatRec = false;
-	  
+
+	  int index = 0;
 	  for (auto& s: cbcStubPos) {
+	    index++;
 	    double diff = s - txpos;
 	    if (std::abs(diff) < std::abs(min)) {
 	      cbcStPos = s;
+	      cbcStBend = cbcStubBend[index];
 	      min = diff;
 	    }
 	  }
 	  mh.cbcStubTrackPosDiff->Fill(min);
 	  //if (std::abs(min) < 0.15) {
-	  if (std::abs(min) < 0.20) {
+	  if (std::abs(min) < 0.20/* && std::abs(cbcStBend) < 2*/) {
 	    mh.tkcbcStubRes->Fill(min);
 	    mh.matchedCbcStubPos->Fill(cbcStPos);
 	    //std::cout<<"cbcStPos: "<<cbcStPos<<"\t";
+	    mh.matchedCbcStubBend->Fill(cbcStBend);
 	    nMatchedcbcStubs++;
 	    if (imod == 0) {
 	      mh.cbcMatchedTkYPos->Fill(typos);

@@ -109,6 +109,9 @@ void ModuleHistos::bookHistos() {
   cbcStubposfe0 = new TH1F("cbcStubposfe0_" + moduleId, "CBC stub profile FE0 " + moduleId, 1016, 1, 1017);
   cbcStubposfe1 = new TH1F("cbcStubposfe1_" + moduleId, "CBC stub profile FE1 " + moduleId, 1016, 1, 1017);
 
+  cbcStubbendfe0 = new TH1F("cbcStubbendfe0_" + moduleId, "CBC stub bend FE0 " + moduleId, 20, -0.5, 19.5);
+  cbcStubbendfe1 = new TH1F("cbcStubbendfe1_" + moduleId, "CBC stub bend FE1 " + moduleId, 20, -0.5, 19.5);
+
   nrecostubsfe0 = new TH1I("nRecostubsfe0_" + moduleId, "Reco stubs for FE0 " + moduleId, 60, -0.5, 59.5);
   nrecostubsfe1 = new TH1I("nRecostubsfe1_" + moduleId, "Reco stubs for FE1 " + moduleId, 60, -0.5, 59.5);
 
@@ -169,6 +172,7 @@ void ModuleHistos::bookHistos() {
   cbcStubPos = new TH1F ("cbcStubPos","",2000,-45,45);
   recoStubPos = new TH1F ("recoStubPos","",2000,-45,45);
   matchedCbcStubPos = new TH1F ("matchedCbcStubPos","",2000,-45,45);
+  matchedCbcStubBend = new TH1F ("matchedCbcStubBend","",20,-0.5,19.5);
   matchedRecoStubPos = new TH1F ("matchedRecoStubPos","",2000,-45,45);
   stubPosCorrl = new TH2F ("stubPosCorrl","",200,-50.,50.,200,-50.,50.);
   cumlEffCbc  = new TProfile ("cumlEffCbc","",10000,0.,100000.);
@@ -190,6 +194,9 @@ void ModuleHistos::writeHistostofile(TFile* fout) {
 
   cbcStubposfe0->Write();
   cbcStubposfe1->Write();
+
+  cbcStubbendfe0->Write();
+  cbcStubbendfe1->Write();
 
   nrecostubsfe0->Write();
   nrecostubsfe1->Write();
@@ -249,6 +256,7 @@ void ModuleHistos::writeHistostofile(TFile* fout) {
   cbcStubPos->Write();
   recoStubPos->Write();
   matchedCbcStubPos->Write();
+  matchedCbcStubBend->Write();
   matchedRecoStubPos->Write();
   stubPosCorrl->Write();
   cumlEffCbc->Write();

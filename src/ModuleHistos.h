@@ -110,6 +110,9 @@ public:
   TH1F* cbcStubposfe0;
   TH1F* cbcStubposfe1;
 
+  TH1F* cbcStubbendfe0;
+  TH1F* cbcStubbendfe1;
+
   TH1I* nrecostubsfe0;
   TH1I* nrecostubsfe1;
 
@@ -151,6 +154,7 @@ public:
   TH1F* cbcStubPos;
   TH1F* recoStubPos;
   TH1F* matchedCbcStubPos;
+  TH1F* matchedCbcStubBend;
   TH1F* matchedRecoStubPos;
   TH1F* cbcMatchedTkYPos;
   TH1F* recoMatchedTkYPos;
